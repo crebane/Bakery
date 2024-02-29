@@ -1,0 +1,25 @@
+﻿
+
+<div class="card mb-3">
+    <div class="card-body">
+        <h5 class="card-title">@ProductInCart.Name</h5>
+        <p class="card-text">Antal: @ProductInCart.Qty</p>
+        <p class="card-text">Pris per enhet: @ProductInCart.Price.ToString("C")</p>
+        <!-- Lägg till eventuella andra detaljer om produkten -->
+        <button @onclick="OnDelete">Ta bort</button>  <!-- ta bort vara ur varukorgen  -->
+
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public ShoppingCartProduct ProductInCart { get; set; }
+
+    public EventCallback OnDelete { get; set; }
+
+
+    public async Task DeleteProduct()
+    {
+        await OnDelete.InvokeAsync();
+    }
+}

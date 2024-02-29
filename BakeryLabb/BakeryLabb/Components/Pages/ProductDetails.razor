@@ -1,0 +1,110 @@
+﻿@page "/Product/{Id:int}"
+@using BakeryLabb.Data
+@inject BakeryDbContext context
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
+@inject NavigationManager navigationManager
+@inject ShoppingCartService shoppingCartService
+@rendermode InteractiveServer
+
+
+
+@if (ThisProduct == null && ErrorMessage == null)
+{
+    <DisplaySpinner />
+}
+else if (ErrorMessage != null)
+{
+    <DisplayError ErrorMessage="@ErrorMessage" />
+}
+else
+{
+    <h3 class="mb-5">Product Details</h3>
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <img class="img-fluid" src="@ThisProduct.ImageURL" />
+        </div>
+        <div class="col-md-6">
+            <h3>@ThisProduct.Name</h3>
+            <p class="mb-4">@ThisProduct.Description</p>
+            <p class="mb-4">
+                <b>
+                    @ThisProduct.Price.ToString("C")&nbsp;(@ThisProduct.Qty items in stock)
+                </b>
+            </p>
+            <div>
+                <button class="btn btn-success" @onclick="AddToCart_Click">
+                    <b>Add to Cart</b>
+                </button>
+            </div>
+        </div>
+    </div>
+}
+
+@code{
+    [Parameter]
+    public int Id { get; set; }
+
+    [Parameter]
+    public Product? ThisProduct { get; set; }
+
+    [Parameter]
+    public Classes.ShoppingCart shoppingCart { get; set; }
+
+    public string? ErrorMessage { get; set; }
+
+    private List<ShoppingCartProduct>? ShoppingCartProducts { get; set; }
+
+
+    protected override void OnInitialized()
+    {
+        ThisProduct = GetProductById(Id);
+        AddToCart_Click();
+    }
+
+    private Product GetProductById(int productId)
+    {
+        // Hämtar produkten från BakeryDbContext baserat på ID
+        return context.Products.FirstOrDefault(p => p.Id == productId);
+    }
+
+    private async Task AddToCart_Click()
+    {
+        var result = await shoppingCartService.AddToCart(new CartProductToAdd
+        {
+                ProductId = ThisProduct.Id,
+                Name = ThisProduct.Name,
+                Price = ThisProduct.Price,
+                Qty = 1
+        });
+
+        if (result)
+        {
+            navigationManager.NavigateTo("/ShoppingCart");
+        }
+        else
+        {
+            Console.WriteLine("Kunde inte lägga till produkten i varukorgen.");
+        }
+    }
+
+    // private async Task AddToCart_Click(CartProductToAdd cartProductToAdd)
+    // {
+    //     try
+    //     {
+    //         var cartProducts = await shoppingCartService.AddProduct(cartProductToAdd);
+
+    //         if (cartProducts != null)
+    //         {
+    //             ShoppingCartProducts.Add(cartProducts);
+    //             await localStorage.SetItemAsync<List<ShoppingCartProduct>>("ShoppingCartProduct", ShoppingCartProducts);
+    //         }
+
+    //         navigationManager.NavigateTo("/ShoppingCart");
+    //     }
+    //     catch (Exception)
+    //     {
+    //         //Log exeption
+    //         throw;
+    //     }
+    // }
+}

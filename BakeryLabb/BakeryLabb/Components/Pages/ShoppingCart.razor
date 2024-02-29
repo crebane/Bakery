@@ -1,0 +1,37 @@
+﻿@page "/ShoppingCart"
+@inject ShoppingCartService shoppingCartService
+@using BakeryLabb.Data
+
+<h3>Varukorg</h3>
+
+<div class="cart">
+
+  @*   @foreach (var cartProduct in ShoppingCartProducts)
+    {
+        <ShoppingCartProductCard ProductInCart="@cartProduct" />
+    } *@
+    @if (ShoppingCartProducts.Count > 0)
+    {
+        foreach (var cartProduct in ShoppingCartProducts)
+        {
+            <ShoppingCartProductCard ProductInCart="@cartProduct" />
+        }
+    }
+    else
+    {
+        <p>Varukorgen är tom</p>
+    }
+</div>
+
+@code {
+    private List<ShoppingCartProduct>? ShoppingCartProducts { get; set; }
+
+    //List<Product> Cart => ShoppingCartService.GetCart();
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Hämta varukorgen från localStorage
+        ShoppingCartProducts = await shoppingCartService.GetShoppingCart();
+        StateHasChanged();
+    }
+}

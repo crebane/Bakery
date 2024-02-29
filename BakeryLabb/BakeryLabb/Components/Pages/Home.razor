@@ -1,0 +1,54 @@
+﻿@page "/"
+@using BakeryLabb.Data
+@inject NavigationManager navigationManager
+@inject BakeryDbContext context
+@inject ShoppingCartService shoppingCartService
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
+@rendermode InteractiveServer
+
+
+<PageTitle>Home</PageTitle>
+
+<h1>Välkommen till Bake´ N Cake</h1>
+
+<p>Här kan du hitta ett brett utbud av bakverk, som sedan levereras rakt till din dörr!</p>
+
+<br />
+
+@if (Products is null && ErrorMessage == null)
+{
+    <DisplaySpinner></DisplaySpinner>
+}
+else if (ErrorMessage != null)
+{
+    <DisplayError ErrorMessage="@ErrorMessage"></DisplayError>
+}
+else
+{
+    <h5 class="mb-2">Dagens guldkorn</h5>
+
+    <div class="row mt-3">
+        @foreach (var product in Products)
+        {
+            <DisplayProduct Product="@product" />
+        }
+    </div>
+}
+
+@code{
+    private List<Product>? Products { get; set; }
+    public string? ErrorMessage { get; set; }
+
+    protected override void OnInitialized()
+    {
+        Products = GetProducts();
+    }
+
+    private List<Product> GetProducts()
+    {
+        // Hämta produkter från BakeryContext
+        return context.Products.ToList();
+    }
+
+
+}

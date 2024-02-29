@@ -1,0 +1,58 @@
+﻿@inject NavigationManager navigationManager
+@inject ShoppingCartService shoppingCartService
+
+
+    <div class="col-md-3 mb-2">
+    @if (Product is not null)
+    {
+        <a href="/Product/@Product.Id">
+                <div class="card">
+                    <img class="img-thumbnail" src="@Product.ImageURL" />
+                    <div class="card-body">
+                        <h5 class="card-title mb-3">
+                            @Product.Name
+                        </h5>
+                        <p class="card-text">
+                            <b>@Product.Price.ToString("C")</b>
+                        </p>
+                    <button class="btn btn-outline-success" @onclick="AddToCart">Köp</button>
+                    <button class="btn btn-outline-primary" @onclick="() => GoToProductDetails(Product.Id)">Info</button>
+                     </div>
+                </div>
+        </a>
+    }
+    else
+    {
+        <p>Produkten är inte tillgänglig</p>
+    }
+</div>
+
+@code{
+    [Parameter]
+    public Product? Product { get; set; }
+
+    private List<Product> _cart = new List<Product>();
+
+
+    protected void GoToProductDetails(int productId)
+    {
+        navigationManager.NavigateTo($"/Product/{productId}");
+    }
+
+    private void AddToCart()
+    {
+        if (Product != null)
+        {
+            var cartItemToAdd = new CartProductToAdd
+                {
+                    ProductId = Product.Id,
+                    Name = Product.Name,
+                    Price = Product.Price,
+                    Qty = 1
+                };
+
+            // Anropa AddToCart-metoden i ShoppingCartService
+            shoppingCartService.AddToCart(cartItemToAdd);
+        }
+    }
+}

@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34616.47
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BakeryLabb", "BakeryLabb\BakeryLabb\BakeryLabb.csproj", "{414095CD-C438-4207-93CD-45F7A52D82EE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BakeryLabb.Client", "BakeryLabb\BakeryLabb.Client\BakeryLabb.Client.csproj", "{9A53CBE9-A2D6-4A1C-A01E-C50AC09B4148}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{414095CD-C438-4207-93CD-45F7A52D82EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{414095CD-C438-4207-93CD-45F7A52D82EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{414095CD-C438-4207-93CD-45F7A52D82EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{414095CD-C438-4207-93CD-45F7A52D82EE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9A53CBE9-A2D6-4A1C-A01E-C50AC09B4148}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9A53CBE9-A2D6-4A1C-A01E-C50AC09B4148}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9A53CBE9-A2D6-4A1C-A01E-C50AC09B4148}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9A53CBE9-A2D6-4A1C-A01E-C50AC09B4148}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B47513FA-76A5-4ADB-817F-1B81A4939DB9}
+	EndGlobalSection
+EndGlobal
