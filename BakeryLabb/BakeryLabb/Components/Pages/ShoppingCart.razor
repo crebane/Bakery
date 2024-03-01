@@ -24,14 +24,24 @@
 </div>
 
 @code {
-    private List<ShoppingCartProduct>? ShoppingCartProducts { get; set; }
+    private List<ShoppingCartProduct>? ShoppingCartProducts { get; set; } = new();
 
     //List<Product> Cart => ShoppingCartService.GetCart();
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        // Hämta varukorgen från localStorage
-        ShoppingCartProducts = await shoppingCartService.GetShoppingCart();
-        StateHasChanged();
+        if (firstRender)
+        {
+            // Hämta varukorgen från localStorage
+            ShoppingCartProducts = await shoppingCartService.GetShoppingCart();
+            StateHasChanged();
+        }
     }
+
+    // protected override async Task OnInitializedAsync()
+    // {
+    //     // Hämta varukorgen från localStorage
+    //     ShoppingCartProducts = await shoppingCartService.GetShoppingCart();
+    //     StateHasChanged();
+    // }
 }
