@@ -1,4 +1,4 @@
-﻿
+﻿@rendermode InteractiveServer
 
 <div class="card mb-3">
     <div class="card-body">
@@ -16,6 +16,9 @@
     public ShoppingCartProduct ProductInCart { get; set; }
 
     public EventCallback OnDelete { get; set; }
+
+    protected string? TotalPrice { get; set; }
+    protected int TotalQuantity { get; set; }
 
 
     public async Task DeleteProduct()

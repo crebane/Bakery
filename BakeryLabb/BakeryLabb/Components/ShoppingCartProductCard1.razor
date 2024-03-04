@@ -1,0 +1,80 @@
+﻿@rendermode InteractiveServer
+@using BakeryLabb.Classes
+@inject ShoppingCartService shoppingCartService
+@inject NavigationManager navigationManager
+
+@if (ShoppingCartProducts == null && ErrorMessage == null)
+{
+    <DisplaySpinner></DisplaySpinner>
+}
+else if (ErrorMessage != null)
+{
+    <DisplaySpinner ErrorMessage="@ErrorMessage"></DisplaySpinner>
+}
+else
+{
+
+        <div class="row mb-5">
+            <div class="col-md-9">
+                    <div class="row mb-4">
+                        <div class="col-md-8">
+                            <h5>@ProductInCart.Product.Name</h5>
+                            <div class="mb-4">@ProductInCart.Product.Description</div>
+                            <span>
+                        Price: <b>@ProductInCart.Product.Price.ToString("C")</b>
+@*                                 <input @oninput="() => UpdateQty_Input(product.Id)" type="number" @bind="product.Qty" />
+                                <button data-itemId="@product.Id" class="btn btn-info btn-sm update-qty"
+                                        @onclick="(() => UpdateQtyCartItem_Click(product.Id, product.Qty))">
+                                    Update Qty
+                                </button>
+ *@                            </span>
+                            <div>
+@*                                 <button @onclick="(() => DeleteCartItem_Click(product.Id))"
+                                        class="btn btn-danger sm">
+                                    <i class="fa fa-trash"></i>
+                                </button> *@
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+            <div class="col-md-3">
+                <h5>Cart Summary</h5>
+                <div class="mt-2">
+                    <div>Total - (@TotalQuantity items)&nbsp;<b>@TotalPrice</b></div>
+                    <a href="Checkout" class="btn btn-success">
+                        <span class="oi oi-credit-card"></span>&nbsp; Proceed to Checkout
+                    </a>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <h4>There are currently no items in your shopping cart</h4>
+    }
+}
+
+@code{
+    [Parameter]
+    public ShoppingCartProduct ProductInCart { get; set; }
+
+    private List<ShoppingCartProduct> ShoppingCartProducts { get; set; } = new List<ShoppingCartProduct>();
+
+
+    public string? ErrorMessage { get; set; }
+    protected string? TotalPrice { get; set; }
+    protected int TotalQuantity { get; set; }
+
+    // private void RemoveFromCart(ShoppingCartProduct product)
+    // {
+    //     shoppingCartService.RemoveFromCart(product); // Anropar en metod i din ShoppingCartService för att ta bort produkten
+    //     UpdateShoppingCart(); // Uppdaterar varukorgen och renderar om sidan
+    //}
+
+    private void UpdateShoppingCart()
+    {
+        ShoppingCartProducts = shoppingCartService.GetShoppingCartProducts().Result;
+        StateHasChanged(); // Meddela Blazor att komponentens tillstånd har ändrats och behöver renderas om
+    }
+}

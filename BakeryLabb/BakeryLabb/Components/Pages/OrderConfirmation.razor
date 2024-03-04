@@ -1,0 +1,46 @@
+﻿@page "/OrderConfirmation"
+@inject ShoppingCartService shoppingCartService
+@inject OrderService orderService
+@rendermode InteractiveServer
+
+
+<h3>Order Confirmation</h3>
+
+<p>Thank you for your order, @orderService.UserInformation.FirstName!</p>
+
+<h5>Shipping Address:</h5>
+<p>@orderService.UserInformation.Address</p>
+<p>@orderService.UserInformation.ZipCode</p>
+<p>@orderService.UserInformation.City</p>
+
+
+<h5>Order Details:</h5>
+<ul>
+    @foreach (var item in ShoppingCartProducts)
+    {
+        <li>@item.Name - Quantity: @item.Qty</li>
+    }
+</ul>
+
+@code {
+    public UserInformation UserInformation { get; set; } = new UserInformation();
+
+    public List<ShoppingCartProduct> ShoppingCartProducts { get; set; } = new List<ShoppingCartProduct>();
+
+
+    protected override void OnInitialized()
+    {
+        UserInformation = shoppingCartService.GetShippingAddress();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // Hämta varukorgen från localStorage
+            ShoppingCartProducts = await shoppingCartService.GetShoppingCartProducts();
+            await shoppingCartService.ClearShoppingCart();
+            StateHasChanged();
+        }
+    }
+}

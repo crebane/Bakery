@@ -32,9 +32,7 @@ else
                 </b>
             </p>
             <div>
-                <button class="btn btn-success" @onclick="AddToCart_Click">
-                    <b>Add to Cart</b>
-                </button>
+                <AddToCartButton Product="ThisProduct"/>
             </div>
         </div>
     </div>
@@ -65,45 +63,4 @@ else
         // Hämtar produkten från BakeryDbContext baserat på ID
         return context.Products.FirstOrDefault(p => p.Id == productId);
     }
-
-    private async Task AddToCart_Click()
-    {
-        var result = await shoppingCartService.AddToCart(new CartProductToAdd
-        {
-                ProductId = ThisProduct.Id,
-                Name = ThisProduct.Name,
-                Price = ThisProduct.Price,
-                Qty = 1
-        });
-
-        if (result)
-        {
-            navigationManager.NavigateTo("/ShoppingCart");
-        }
-        else
-        {
-            Console.WriteLine("Kunde inte lägga till produkten i varukorgen.");
-        }
-    }
-
-    // private async Task AddToCart_Click(CartProductToAdd cartProductToAdd)
-    // {
-    //     try
-    //     {
-    //         var cartProducts = await shoppingCartService.AddProduct(cartProductToAdd);
-
-    //         if (cartProducts != null)
-    //         {
-    //             ShoppingCartProducts.Add(cartProducts);
-    //             await localStorage.SetItemAsync<List<ShoppingCartProduct>>("ShoppingCartProduct", ShoppingCartProducts);
-    //         }
-
-    //         navigationManager.NavigateTo("/ShoppingCart");
-    //     }
-    //     catch (Exception)
-    //     {
-    //         //Log exeption
-    //         throw;
-    //     }
-    // }
 }

@@ -15,9 +15,8 @@
                         <p class="card-text">
                             <b>@Product.Price.ToString("C")</b>
                         </p>
-                    <button class="btn btn-outline-success" @onclick="AddToCart">Köp</button>
-                    <button class="btn btn-outline-primary" @onclick="() => GoToProductDetails(Product.Id)">Info</button>
-                     </div>
+                        <AddToCartButton Product="Product"/>
+                    </div>
                 </div>
         </a>
     }
@@ -32,27 +31,4 @@
     public Product? Product { get; set; }
 
     private List<Product> _cart = new List<Product>();
-
-
-    protected void GoToProductDetails(int productId)
-    {
-        navigationManager.NavigateTo($"/Product/{productId}");
-    }
-
-    private void AddToCart()
-    {
-        if (Product != null)
-        {
-            var cartItemToAdd = new CartProductToAdd
-                {
-                    ProductId = Product.Id,
-                    Name = Product.Name,
-                    Price = Product.Price,
-                    Qty = 1
-                };
-
-            // Anropa AddToCart-metoden i ShoppingCartService
-            shoppingCartService.AddToCart(cartItemToAdd);
-        }
-    }
 }

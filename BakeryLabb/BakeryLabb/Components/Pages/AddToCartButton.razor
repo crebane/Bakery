@@ -1,0 +1,32 @@
+﻿@inject NavigationManager navigationManager
+@inject ShoppingCartService shoppingCartService
+@rendermode InteractiveServer
+
+<button class="btn btn-primary" @onclick="AddToCart_Click" @onclick:stopPropagation="true">Lägg till</button>
+
+
+@code {
+    [Parameter]
+    public Product Product { get; set; }
+
+
+    private async Task AddToCart_Click()
+    {
+        var result = await shoppingCartService.AddToCart(new CartProductToAdd
+            {
+                ProductId = Product.Id,
+                Name = Product.Name,
+                Price = Product.Price,
+                Qty = 1
+            });
+
+        if (result)
+        {
+            navigationManager.NavigateTo("/ShoppingCart");
+        }
+        else
+        {
+            Console.WriteLine("Kunde inte lägga till produkten i varukorgen.");
+        }
+    }
+}

@@ -1,15 +1,19 @@
 ﻿@page "/ShoppingCart"
-@inject ShoppingCartService shoppingCartService
 @using BakeryLabb.Data
+@inject ShoppingCartService shoppingCartService
+@inject NavigationManager navigationManager
+@inject OrderService orderService
+@rendermode InteractiveServer
 
 <h3>Varukorg</h3>
 
+<br /> 
+<br />
+
+<h5>Dina produkter:</h5>
+
 <div class="cart">
 
-  @*   @foreach (var cartProduct in ShoppingCartProducts)
-    {
-        <ShoppingCartProductCard ProductInCart="@cartProduct" />
-    } *@
     @if (ShoppingCartProducts.Count > 0)
     {
         foreach (var cartProduct in ShoppingCartProducts)
@@ -23,25 +27,86 @@
     }
 </div>
 
-@code {
-    private List<ShoppingCartProduct>? ShoppingCartProducts { get; set; } = new();
+<br />
+<br />
 
-    //List<Product> Cart => ShoppingCartService.GetCart();
+<EditForm Model="@UserInformation" OnValidSubmit="SubmitOrder" FormName="PlaceOrder">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group">
+        <label for="firstName">First Name:</label>
+        <InputText id="firstName" @bind-Value="UserInformation.FirstName" class="form-control" />
+        <ValidationMessage For="@(() => UserInformation.FirstName)" />
+    </div>
+
+    <div class="form-group">
+        <label for="lastName">Last Name:</label>
+        <InputText id="lastName" @bind-Value="UserInformation.LastName" class="form-control" />
+        <ValidationMessage For="@(() => UserInformation.LastName)" />
+    </div>
+
+    <div class="form-group">
+        <label for="email">Email:</label>
+        <InputText id="email" @bind-Value="UserInformation.Email" class="form-control" />
+        <ValidationMessage For="@(() => UserInformation.Email)" />
+    </div>
+
+    <div class="form-group">
+        <label for="phoneNumber">Phone number:</label>
+        <InputText id="phoneNumber" @bind-Value="UserInformation.PhoneNumber" class="form-control" />
+        <ValidationMessage For="@(() => UserInformation.PhoneNumber)" />
+    </div>
+
+    <div class="form-group">
+        <label for="streetAddress">Street Address:</label>
+        <InputText id="streetAddress" @bind-Value="UserInformation.Address" class="form-control" />
+        <ValidationMessage For="@(() => UserInformation.Address)" />
+    </div>
+
+    <div class="form-group">
+        <label for="city">City:</label>
+        <InputText id="city" @bind-Value="UserInformation.City" class="form-control" />
+        <ValidationMessage For="@(() => UserInformation.City)" />
+    </div>
+
+    <div class="form-group">
+        <label for="zipCode">Zip Code:</label>
+        <InputNumber id="zipCode" @bind-Value="UserInformation.ZipCode" class="form-control" />
+        <ValidationMessage For="@(() => UserInformation.ZipCode)" />
+    </div>
+
+    <br />
+
+    <button type="submit" class="btn btn-primary">Lägg order</button>
+</EditForm>
+
+
+@code{
+    public UserInformation UserInformation { get; private set; } = new UserInformation();
+    private List<ShoppingCartProduct> ShoppingCartProducts { get; set; } = new List<ShoppingCartProduct>();
+
+    protected override void OnInitialized()
+    {
+        UserInformation = shoppingCartService.GetShippingAddress();
+    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
             // Hämta varukorgen från localStorage
-            ShoppingCartProducts = await shoppingCartService.GetShoppingCart();
+            ShoppingCartProducts = await shoppingCartService.GetShoppingCartProducts();
             StateHasChanged();
         }
     }
 
-    // protected override async Task OnInitializedAsync()
-    // {
-    //     // Hämta varukorgen från localStorage
-    //     ShoppingCartProducts = await shoppingCartService.GetShoppingCart();
-    //     StateHasChanged();
-    // }
+    private async Task SubmitOrder()
+    {
+        orderService.SetOrderInfo(UserInformation);
+        StateHasChanged();
+        navigationManager.NavigateTo("/OrderConfirmation");
+    }
+
+
 }

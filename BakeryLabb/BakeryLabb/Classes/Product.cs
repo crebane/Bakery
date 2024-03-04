@@ -9,5 +9,4 @@ public class Product
     public decimal Price { get; set; }
     public int Qty { get; set; }
     public List<ShoppingCart> ShoppingCarts { get; set; }
-
 }

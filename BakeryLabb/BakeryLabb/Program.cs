@@ -26,8 +26,8 @@ builder.Services.AddScoped<AuthenticationStateProvider, PersistingRevalidatingAu
 
 builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddScoped<BakeryLabb.Classes.ShoppingCart>();
-//builder.Services.AddScoped<ShoppingCart>();
 builder.Services.AddScoped<ShoppingCartService>();
+builder.Services.AddScoped<OrderService>();
 
 
 builder.Services.AddAuthentication(options =>
