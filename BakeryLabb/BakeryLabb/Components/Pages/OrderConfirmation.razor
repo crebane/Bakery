@@ -8,6 +8,9 @@
 
 <p>Thank you for your order, @orderService.UserInformation.FirstName!</p>
 
+<br />
+<br />
+
 <h5>Shipping Address:</h5>
 <p>@orderService.UserInformation.Address</p>
 <p>@orderService.UserInformation.ZipCode</p>
@@ -18,7 +21,7 @@
 <ul>
     @foreach (var item in ShoppingCartProducts)
     {
-        <li>@item.Name - Quantity: @item.Qty</li>
+        <li>@item.Name - @item.Qty st</li>
     }
 </ul>
 

@@ -1,8 +1,7 @@
 ﻿@inject NavigationManager navigationManager
 @inject ShoppingCartService shoppingCartService
 
-
-    <div class="col-md-3 mb-2">
+<div class="col-md-3 mb-2">
     @if (Product is not null)
     {
         <a href="/Product/@Product.Id">
@@ -30,5 +29,5 @@
     [Parameter]
     public Product? Product { get; set; }
 
-    private List<Product> _cart = new List<Product>();
+    // private List<Product> _cart = new List<Product>();
 }

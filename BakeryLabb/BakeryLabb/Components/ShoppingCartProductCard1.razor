@@ -1,80 +1,70 @@
 ﻿@rendermode InteractiveServer
-@using BakeryLabb.Classes
 @inject ShoppingCartService shoppingCartService
-@inject NavigationManager navigationManager
 
-@if (ShoppingCartProducts == null && ErrorMessage == null)
-{
-    <DisplaySpinner></DisplaySpinner>
-}
-else if (ErrorMessage != null)
-{
-    <DisplaySpinner ErrorMessage="@ErrorMessage"></DisplaySpinner>
-}
-else
-{
+<div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Total</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var product in ProductsInCart)
+            {
+                <tr>
+                    <td>@product.Name</td>
+                    <td>
+                        @product.Qty
+                        <input type="number" @bind="product.Qty" min="0" />
+                        <button @onclick="() => UpdateQuantity_Click(product.Id, product.Qty)">Uppdatera kvantitet</button>
+                    </td>
+                    <td>@product.Price.ToString("C")</td>
+                    <td>@(product.Price * product.Qty)</td>
+                    <td>
+                        <button @onclick="() => RemoveProductFromCart_Click(product.Id)">Ta bort</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
 
-        <div class="row mb-5">
-            <div class="col-md-9">
-                    <div class="row mb-4">
-                        <div class="col-md-8">
-                            <h5>@ProductInCart.Product.Name</h5>
-                            <div class="mb-4">@ProductInCart.Product.Description</div>
-                            <span>
-                        Price: <b>@ProductInCart.Product.Price.ToString("C")</b>
-@*                                 <input @oninput="() => UpdateQty_Input(product.Id)" type="number" @bind="product.Qty" />
-                                <button data-itemId="@product.Id" class="btn btn-info btn-sm update-qty"
-                                        @onclick="(() => UpdateQtyCartItem_Click(product.Id, product.Qty))">
-                                    Update Qty
-                                </button>
- *@                            </span>
-                            <div>
-@*                                 <button @onclick="(() => DeleteCartItem_Click(product.Id))"
-                                        class="btn btn-danger sm">
-                                    <i class="fa fa-trash"></i>
-                                </button> *@
-                            </div>
-                        </div>
-                    </div>
-                }
-            </div>
-            <div class="col-md-3">
-                <h5>Cart Summary</h5>
-                <div class="mt-2">
-                    <div>Total - (@TotalQuantity items)&nbsp;<b>@TotalPrice</b></div>
-                    <a href="Checkout" class="btn btn-success">
-                        <span class="oi oi-credit-card"></span>&nbsp; Proceed to Checkout
-                    </a>
-                </div>
-            </div>
-        </div>
-    }
-    else
-    {
-        <h4>There are currently no items in your shopping cart</h4>
-    }
-}
+<div>
+    <p>Totalt:</p>
+    <b>@shoppingCartService.GetTotal().ToString("C")</b>
+</div>
 
-@code{
+
+@code {
     [Parameter]
-    public ShoppingCartProduct ProductInCart { get; set; }
-
-    private List<ShoppingCartProduct> ShoppingCartProducts { get; set; } = new List<ShoppingCartProduct>();
-
+    public List<ShoppingCartProduct> ProductsInCart { get; set; }
 
     public string? ErrorMessage { get; set; }
     protected string? TotalPrice { get; set; }
     protected int TotalQuantity { get; set; }
 
-    // private void RemoveFromCart(ShoppingCartProduct product)
-    // {
-    //     shoppingCartService.RemoveFromCart(product); // Anropar en metod i din ShoppingCartService för att ta bort produkten
-    //     UpdateShoppingCart(); // Uppdaterar varukorgen och renderar om sidan
-    //}
-
-    private void UpdateShoppingCart()
+    // //Försöker kunna ta bort enskild bara från varukorgen
+    private async Task RemoveProductFromCart_Click(int productId)
     {
-        ShoppingCartProducts = shoppingCartService.GetShoppingCartProducts().Result;
-        StateHasChanged(); // Meddela Blazor att komponentens tillstånd har ändrats och behöver renderas om
+        await shoppingCartService.RemoveProductFromCart(productId);
+        StateHasChanged();
+    }
+
+    private async Task UpdateQuantity_Click(int productId, int newQuantity)
+    {
+        if (await shoppingCartService.UpdateQuantity(productId, newQuantity))
+        {
+            // Uppdatera det lokala tillståndet efter att kvantiteten har ändrats i varukorgen
+            var productToUpdate = ProductsInCart.FirstOrDefault(p => p.Id == productId);
+
+            if (productToUpdate != null)
+            {
+                productToUpdate.Qty = newQuantity;
+            }
+        }
     }
 }
