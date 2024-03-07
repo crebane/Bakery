@@ -1,10 +1,11 @@
 ﻿@implements IDisposable
 
 @inject NavigationManager NavigationManager
+@inject ShoppingCartService shoppingCartService
 
 <div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="">BakeryLabb</a>
+        <a class="navbar-brand" href="">Bake´ N Cake</a>
     </div>
 </div>
 
@@ -14,21 +15,20 @@
     <nav class="flex-column">
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
+                <span class="fa fa-sold fa-house" aria-hidden="true"></span>&nbsp;&nbsp;&nbsp;Förstasidan
             </NavLink>
         </div>
 
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="ShoppingCart">
-@*                 <span class="fa fa-shopping-cart" aria-hidden="true"></span>&nbsp;Shopping Cart
- *@                <span class="fa fa-shopping-cart" aria-hidden="true"></span>&nbsp; Shopping Cart (<b>@shoppingCartItemsCount</b>)
-
+                <span class="fa fa-shopping-cart" aria-hidden="true"></span>&nbsp;&nbsp;&nbsp;Varukorgen
+                @* <span class="fa fa-shopping-cart" aria-hidden="true"></span>&nbsp; Shopping Cart (<b>@shoppingCartItemsCount</b>) *@
             </NavLink>
         </div>
 
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="auth">
-                <span class="bi bi-lock-nav-menu" aria-hidden="true"></span> Auth Required
+                <span class="fa fa-solid fa-lock" aria-hidden="true"></span>&nbsp;&nbsp;&nbsp;&nbsp;Låst för obehörig
             </NavLink>
         </div>
 
@@ -36,7 +36,7 @@
             <Authorized>
                 <div class="nav-item px-3">
                     <NavLink class="nav-link" href="Account/Manage">
-                        <span class="bi bi-person-fill-nav-menu" aria-hidden="true"></span> @context.User.Identity?.Name
+                        <span class="fa fa-solid fa-user" aria-hidden="true"></span>&nbsp;&nbsp;&nbsp;&nbsp;@context.User.Identity?.Name
                     </NavLink>
                 </div>
                 <div class="nav-item px-3">
@@ -44,7 +44,7 @@
                         <AntiforgeryToken />
                         <input type="hidden" name="ReturnUrl" value="@currentUrl" />
                         <button type="submit" class="nav-link">
-                            <span class="bi bi-arrow-bar-left-nav-menu" aria-hidden="true"></span> Logout
+                            <span class="fa fa-solid fa-arrow-right-from-bracket aria-hidden="true"></span>&nbsp;&nbsp;&nbsp;&nbsp;Logga ut
                         </button>
                     </form>
                 </div>
@@ -52,12 +52,12 @@
             <NotAuthorized>
                 <div class="nav-item px-3">
                     <NavLink class="nav-link" href="Account/Register">
-                        <span class="bi bi-person-nav-menu" aria-hidden="true"></span> Register
+                        <span class="fa fa-regular fa-user" aria-hidden="true"></span>&nbsp;&nbsp;&nbsp;&nbsp;Registrering
                     </NavLink>
                 </div>
                 <div class="nav-item px-3">
                     <NavLink class="nav-link" href="Account/Login">
-                        <span class="bi bi-person-badge-nav-menu" aria-hidden="true"></span> Login
+                        <span class="fa fa-solid fa-arrow-right-to-bracket" aria-hidden="true"></span>&nbsp;&nbsp;&nbsp;&nbsp;Logga in
                     </NavLink>
                 </div>
             </NotAuthorized>
@@ -68,13 +68,29 @@
 @code {
     private string? currentUrl;
 
-    private int shoppingCartItemsCount = 0;
+    // private int shoppingCartItemsCount;
 
     protected override void OnInitialized()
     {
         currentUrl = NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
         NavigationManager.LocationChanged += OnLocationChanged;
+
+        // Prenumerera på händelsen när komponenten initialiseras
+        //shoppingCartService.OnShoppingCartChanged += UpdateShoppingCartItemsCount;
+
+        // Hämta det aktuella antalet varor i varukorgen
+        //shoppingCartItemsCount = shoppingCartService.GetShoppingCartItemsCount();
+        // UpdateShoppingCartItemsCount(shoppingCartService.GetShoppingCartItemsCount());
     }
+
+    // private void UpdateShoppingCartItemsCount(int count)
+    // {
+    //     // Uppdatera antalet varor i varukorgen när händelsen triggas
+    //     shoppingCartItemsCount = count;
+
+    //     // Uppdatera komponentens UI
+    //     StateHasChanged();
+    // }
 
     private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
     {

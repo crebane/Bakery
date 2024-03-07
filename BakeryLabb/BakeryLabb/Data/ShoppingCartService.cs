@@ -1,8 +1,5 @@
 ﻿using BakeryLabb.Classes;
-using BakeryLabb.Components.Pages;
-using BakeryLabb.Migrations;
 using Blazored.LocalStorage;
-using Microsoft.EntityFrameworkCore;
 
 namespace BakeryLabb.Data;
 
@@ -14,24 +11,28 @@ public class ShoppingCartService
     //public event Action<int> OnShoppingCartChanged;
 
 
-    private readonly BakeryDbContext _context;
     private readonly ILocalStorageService _localStorage;
-    private readonly Classes.ShoppingCart _shoppingCart;
 
-    public ShoppingCartService(BakeryDbContext context, ILocalStorageService localStorage, Classes.ShoppingCart shoppingCart)
+    public List<ShoppingCartProduct> ShoppingCartProducts { get; set; } = new();
+
+    public ShoppingCartService(BakeryDbContext context, ILocalStorageService localStorage)
     {
-        _context = context;
         _localStorage = localStorage;
-        _shoppingCart = shoppingCart;
     }
 
     private UserInformation UserInformation { get; set; } = new UserInformation();
+    //public event Action<int> OnShoppingCartChanged;
+
+    public async Task InitializeShoppingCart()
+    {
+        ShoppingCartProducts = await _localStorage.GetItemAsync<List<ShoppingCartProduct>>(CartKey) ?? new List<ShoppingCartProduct>();
+    }
 
     public async Task<bool> AddToCart(CartProductToAdd cartProductToAdd)
     {
         try
         {
-            var existingProduct = _shoppingCart.ShoppingCartProducts.FirstOrDefault(p => p.ProductId == cartProductToAdd.ProductId);
+            var existingProduct = ShoppingCartProducts.FirstOrDefault(p => p.ProductId == cartProductToAdd.ProductId);
 
             if (existingProduct != null)
             {
@@ -41,7 +42,7 @@ public class ShoppingCartService
             else
             {
                 // Produkten finns inte i varukorgen, lägg till den
-                _shoppingCart.ShoppingCartProducts.Add(new ShoppingCartProduct
+                ShoppingCartProducts.Add(new ShoppingCartProduct
                 {
                     ProductId = cartProductToAdd.ProductId,
                     Name = cartProductToAdd.Name,
@@ -67,7 +68,7 @@ public class ShoppingCartService
         try
         {
             var products = await _localStorage.GetItemAsync<List<ShoppingCartProduct>>(CartKey) ?? new List<ShoppingCartProduct>();
-            _shoppingCart.ShoppingCartProducts = products;
+            ShoppingCartProducts = products;
             return products;
         }
         catch (Exception ex)
@@ -80,7 +81,10 @@ public class ShoppingCartService
 
     private async Task SaveShoppingCart()
     {
-        await _localStorage.SetItemAsync(CartKey, _shoppingCart.ShoppingCartProducts);
+        await _localStorage.SetItemAsync(CartKey, ShoppingCartProducts);
+
+        // Uppdatera antalet varor i varukorgen när varukorgen ändras
+        //OnShoppingCartChanged?.Invoke(_shoppingCart.ShoppingCartProducts.Count);
     }
 
     public void SetShippingAddress(UserInformation userInformation)
@@ -107,31 +111,32 @@ public class ShoppingCartService
     //    }
     //}
 
-    //Försöker kunna ta bort enskild bara från varukorgen
     public async Task RemoveProductFromCart(int productId)
     {
-        var existingProduct = _shoppingCart.ShoppingCartProducts.FirstOrDefault(p => p.Id == productId);
-
-        //if(existingProduct is null)
-        //{
-        //    return;
-        //}
+        var existingProduct = ShoppingCartProducts.FirstOrDefault(p => p.Id == productId);
 
         if (existingProduct != null)
         {
-            _shoppingCart.ShoppingCartProducts.Remove(existingProduct);
+
+            if (existingProduct.Qty > 1)
+            {
+                // Om det finns fler än en instans av produkten i varukorgen, minska bara Qty
+                existingProduct.Qty--;
+            }
+            else
+            {
+                // Om det bara finns en instans, ta bort hela produkten från varukorgen
+                ShoppingCartProducts.Remove(existingProduct);
+            }
+
             await SaveShoppingCart();
-            Console.WriteLine($"Product with ID {productId} removed from the shopping cart.");
-        }
-        else
-        {
-            Console.WriteLine($"Product with ID {productId} not found in the shopping cart.");
+
         }
     }
 
     public decimal GetTotal()
     {
-        var total = _shoppingCart.ShoppingCartProducts.Sum(product => product.Price * product.Qty);
+        var total = ShoppingCartProducts.Sum(product => product.Price * product.Qty);
         return total;
     }
 
@@ -139,7 +144,7 @@ public class ShoppingCartService
     {
         try
         {
-            var existingProduct = _shoppingCart.ShoppingCartProducts.FirstOrDefault(p => p.ProductId == productId);
+            var existingProduct = ShoppingCartProducts.FirstOrDefault(p => p.ProductId == productId);
 
             if (existingProduct != null)
             {
@@ -163,5 +168,11 @@ public class ShoppingCartService
             Console.WriteLine($"Fel vid uppdatering av kvantitet i varukorgen: {ex.Message}");
             return false;
         }
+    }
+
+    public int GetShoppingCartItemsCount()
+    {
+        // Returnera antalet varor i varukorgen
+        return ShoppingCartProducts.Count;
     }
 }

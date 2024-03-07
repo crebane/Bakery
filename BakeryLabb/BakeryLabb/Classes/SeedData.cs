@@ -1,5 +1,4 @@
-﻿using BakeryLabb.Components;
-using BakeryLabb.Data;
+﻿using BakeryLabb.Data;
 
 namespace BakeryLabb.Classes;
 

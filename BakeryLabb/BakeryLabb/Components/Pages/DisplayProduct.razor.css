@@ -1,0 +1,17 @@
+﻿.product-image {
+    max-width: 100%;
+    max-height: 240px; /* Justera detta värde efter behov */
+    object-fit: cover; /* Behåll aspektratio och täck hela behållaren */
+}
+
+.card {
+    max-height: 100%; /* Sätt en maxhöjd för kortet */
+}
+
+.card-title {
+    color: black;
+}
+
+.card-text {
+    color: black;
+}

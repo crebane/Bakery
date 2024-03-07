@@ -1,12 +1,10 @@
 ﻿@page "/Product/{Id:int}"
-@using BakeryLabb.Data
 @inject BakeryDbContext context
-@inject Blazored.LocalStorage.ILocalStorageService localStorage
-@inject NavigationManager navigationManager
 @inject ShoppingCartService shoppingCartService
-@rendermode InteractiveServer
 
+ @rendermode InteractiveServer
 
+<PageTitle>Produktinformation</PageTitle>
 
 @if (ThisProduct == null && ErrorMessage == null)
 {
@@ -18,7 +16,9 @@ else if (ErrorMessage != null)
 }
 else
 {
-    <h3 class="mb-5">Product Details</h3>
+    <br />
+
+    <h3 class="mb-5">Produktinformation</h3>
     <div class="row">
         <div class="col-md-6 mb-4">
             <img class="img-fluid" src="@ThisProduct.ImageURL" />
@@ -28,7 +28,7 @@ else
             <p class="mb-4">@ThisProduct.Description</p>
             <p class="mb-4">
                 <b>
-                    @ThisProduct.Price.ToString("C")&nbsp;(@ThisProduct.Qty items in stock)
+                    @ThisProduct.Price.ToString("C")&nbsp;(@ThisProduct.Qty st i lager)
                 </b>
             </p>
             <div>
@@ -45,12 +45,7 @@ else
     [Parameter]
     public Product? ThisProduct { get; set; }
 
-    [Parameter]
-    public Classes.ShoppingCart shoppingCart { get; set; }
-
     public string? ErrorMessage { get; set; }
-
-    private List<ShoppingCartProduct>? ShoppingCartProducts { get; set; }
 
 
     protected override void OnInitialized()
@@ -62,5 +57,14 @@ else
     {
         // Hämtar produkten från BakeryDbContext baserat på ID
         return context.Products.FirstOrDefault(p => p.Id == productId);
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await shoppingCartService.InitializeShoppingCart();
+            StateHasChanged();
+        }
     }
 }

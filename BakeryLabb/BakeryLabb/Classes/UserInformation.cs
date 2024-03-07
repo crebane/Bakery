@@ -18,7 +18,7 @@ public class UserInformation
     public string? Address { get; set; }
 
     [Required]
-    public int ZipCode { get; set; }
+    public string? ZipCode { get; set; }
 
     [Required]
     public string? City { get; set; }

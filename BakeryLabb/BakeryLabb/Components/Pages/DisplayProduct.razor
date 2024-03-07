@@ -1,12 +1,12 @@
 ﻿@inject NavigationManager navigationManager
-@inject ShoppingCartService shoppingCartService
 
-<div class="col-md-3 mb-2">
+
+<div class="col-4 mb-2 ">
     @if (Product is not null)
     {
-        <a href="/Product/@Product.Id">
+        <a href="/Product/@Product.Id" class="d-flex flex-column h-100">
                 <div class="card">
-                    <img class="img-thumbnail" src="@Product.ImageURL" />
+                <img class="img-thumbnail product-image" src="@Product.ImageURL" />
                     <div class="card-body">
                         <h5 class="card-title mb-3">
                             @Product.Name
@@ -16,7 +16,7 @@
                         </p>
                         <AddToCartButton Product="Product"/>
                     </div>
-                </div>
+                </div>  
         </a>
     }
     else
@@ -28,6 +28,4 @@
 @code{
     [Parameter]
     public Product? Product { get; set; }
-
-    // private List<Product> _cart = new List<Product>();
 }

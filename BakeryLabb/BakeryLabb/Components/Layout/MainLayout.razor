@@ -1,5 +1,6 @@
 ﻿@inherits LayoutComponentBase
 
+
 <div class="page">
     <div class="sidebar">
         <NavMenu />
@@ -8,8 +9,8 @@
     <main>
         <div class="top-row px-4">
             <a href="/ShoppingCart" target="_blank">
-                <i class="fa fa-shopping-cart">
-                    <span style="font-size:15px; vertical-align:top; padding:7px; color:black; border-radius:50%; padding-top:10px; font-weight:bold;"><sup>@cartCount</sup></span>
+                <i class="fa fa-shopping-cart" style="color: white">
+                    @* <span style="font-size:15px; vertical-align:top; padding:7px; color:black; border-radius:50%; padding-top:10px; font-weight:bold;"><sup>@cartCount</sup></span> *@
                 </i>
             </a>
         </div>
@@ -27,5 +28,5 @@
 </div>
 
 @code{
-    public int cartCount = 0;
+    // public int cartCount = 0;
 }

@@ -2,13 +2,12 @@
 @inject ShoppingCartService shoppingCartService
 @rendermode InteractiveServer
 
-<button class="btn btn-primary" @onclick="AddToCart_Click" @onclick:stopPropagation="true">Lägg till</button>
+<button class="btn btn-outline-secondary" @onclick="AddToCart_Click" @onclick:stopPropagation="true">Lägg till</button>
 
 
 @code {
     [Parameter]
     public Product Product { get; set; }
-
 
     private async Task AddToCart_Click()
     {

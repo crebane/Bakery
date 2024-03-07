@@ -3,21 +3,35 @@
 @inject OrderService orderService
 @rendermode InteractiveServer
 
+<PageTitle>Orderbekräftelse</PageTitle>
 
-<h3>Order Confirmation</h3>
+<br />
 
-<p>Thank you for your order, @orderService.UserInformation.FirstName!</p>
+<h3>Orderbekräftelse</h3>
+
+<br />
+
+<p>Tack för din order, @orderService.UserInformation.FirstName!</p>
 
 <br />
 <br />
 
-<h5>Shipping Address:</h5>
+<h5><b>Leveransadress:</b></h5>
+
+<br />
+
+<p>@orderService.UserInformation.FirstName @orderService.UserInformation.LastName</p>
 <p>@orderService.UserInformation.Address</p>
 <p>@orderService.UserInformation.ZipCode</p>
 <p>@orderService.UserInformation.City</p>
 
+<br />
+<br />
 
-<h5>Order Details:</h5>
+<h5><b>Orderdetaljer:</b></h5>
+
+<br />
+
 <ul>
     @foreach (var item in ShoppingCartProducts)
     {

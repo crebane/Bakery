@@ -5,31 +5,52 @@
 @inject OrderService orderService
 @rendermode InteractiveServer
 
-<h3>Varukorg</h3>
+<PageTitle>Varukorgen</PageTitle>
 
 <br /> 
+
+<h3>Din varukorg</h3>
+
 <br />
 
-<h5>Dina produkter:</h5>
-
-<div class="cart">
-
-    @if (ShoppingCartProducts.Count > 0)
-    {
-        foreach (var cartProduct in ShoppingCartProducts)
-        {
-            <ShoppingCartProductCard ProductInCart="@cartProduct" />
-        }
-        
-    }
-    else
-    {
-        <p>Varukorgen är tom</p>
-    }
+<div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Total</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var product in ShoppingCartProducts)
+            {
+                <tr>
+                    <td>@product.Name</td>
+                    <td>
+                        @product.Qty
+                        @* <input type="number" @bind="product.Qty" min="0" />
+                        <button @onclick="() => UpdateQuantity_Click(product.Id, product.Qty)">Uppdatera kvantitet</button> *@
+                    </td>
+                    <td>@product.Price.ToString("C")</td>
+                    <td>@(product.Price * product.Qty)</td>
+                    <td>
+                        <button @onclick="() => RemoveProductFromCart_Click(product.Id)" class="btn btn-danger sm"><i class="fa fa-trash"></i></button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <b>Totalt: @shoppingCartService.GetTotal().ToString("C")</b>
 </div>
 
 <br />
-<br />
+
+<button class="btn btn-outline-secondary btn-sm" @onclick="ContinueShopping">Fortsätt handla</button>
+
+<br /> <br /> <br />
 
 <EditForm Model="@UserInformation" OnValidSubmit="SubmitOrder" FormName="PlaceOrder">
     <DataAnnotationsValidator />
@@ -66,16 +87,17 @@
     </div>
 
     <div class="form-group">
+        <label for="zipCode">Zip Code:</label>
+        <InputText id="zipCode" @bind-Value="UserInformation.ZipCode" class="form-control" />
+        <ValidationMessage For="@(() => UserInformation.ZipCode)" />
+    </div>
+
+    <div class="form-group">
         <label for="city">City:</label>
         <InputText id="city" @bind-Value="UserInformation.City" class="form-control" />
         <ValidationMessage For="@(() => UserInformation.City)" />
     </div>
 
-    <div class="form-group">
-        <label for="zipCode">Zip Code:</label>
-        <InputNumber id="zipCode" @bind-Value="UserInformation.ZipCode" class="form-control" />
-        <ValidationMessage For="@(() => UserInformation.ZipCode)" />
-    </div>
 
     <br />
 
@@ -109,5 +131,29 @@
         navigationManager.NavigateTo("/OrderConfirmation");
     }
 
+    private async Task RemoveProductFromCart_Click(int productId)
+    {
+        await shoppingCartService.RemoveProductFromCart(productId);
+        StateHasChanged();
+    }
 
+    //Försöker få Qty att stanna uppdaterad när jag ändrat antalet
+    private async Task UpdateQuantity_Click(int productId, int newQuantity)
+    {
+        if (await shoppingCartService.UpdateQuantity(productId, newQuantity))
+        {
+            // Uppdatera det lokala tillståndet efter att kvantiteten har ändrats i varukorgen
+            var productToUpdate = ShoppingCartProducts.FirstOrDefault(p => p.Id == productId);
+
+            if (productToUpdate != null)
+            {
+                productToUpdate.Qty = newQuantity;
+            }
+        }
+    }
+
+    private void ContinueShopping()
+    {
+        navigationManager.NavigateTo("/");
+    }
 }
