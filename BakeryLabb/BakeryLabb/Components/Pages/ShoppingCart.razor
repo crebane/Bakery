@@ -57,13 +57,13 @@
     <ValidationSummary />
 
     <div class="form-group">
-        <label for="firstName">First Name:</label>
+        <label for="firstName">Förnamn:</label>
         <InputText id="firstName" @bind-Value="UserInformation.FirstName" class="form-control" />
         <ValidationMessage For="@(() => UserInformation.FirstName)" />
     </div>
 
     <div class="form-group">
-        <label for="lastName">Last Name:</label>
+        <label for="lastName">Efternamn:</label>
         <InputText id="lastName" @bind-Value="UserInformation.LastName" class="form-control" />
         <ValidationMessage For="@(() => UserInformation.LastName)" />
     </div>
@@ -75,25 +75,25 @@
     </div>
 
     <div class="form-group">
-        <label for="phoneNumber">Phone number:</label>
+        <label for="phoneNumber">Mobilnummer:</label>
         <InputText id="phoneNumber" @bind-Value="UserInformation.PhoneNumber" class="form-control" />
         <ValidationMessage For="@(() => UserInformation.PhoneNumber)" />
     </div>
 
     <div class="form-group">
-        <label for="streetAddress">Street Address:</label>
+        <label for="streetAddress">Gatuadress:</label>
         <InputText id="streetAddress" @bind-Value="UserInformation.Address" class="form-control" />
         <ValidationMessage For="@(() => UserInformation.Address)" />
     </div>
 
     <div class="form-group">
-        <label for="zipCode">Zip Code:</label>
+        <label for="zipCode">Postnummer:</label>
         <InputText id="zipCode" @bind-Value="UserInformation.ZipCode" class="form-control" />
         <ValidationMessage For="@(() => UserInformation.ZipCode)" />
     </div>
 
     <div class="form-group">
-        <label for="city">City:</label>
+        <label for="city">Stad:</label>
         <InputText id="city" @bind-Value="UserInformation.City" class="form-control" />
         <ValidationMessage For="@(() => UserInformation.City)" />
     </div>
